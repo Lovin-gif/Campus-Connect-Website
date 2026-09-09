@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Campus Connect — Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#14213D;
+    --paper:#FBFAF7;
+    --card:#FFFFFF;
+    --gold:#C9A227;
+    --sage:#4C7A5C;
+    --coral:#C4483C;
+    --line:#E4E0D6;
+    --muted:#6B7280;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    background-image:
+      radial-gradient(circle, rgba(20,33,61,0.05) 1px, transparent 1px);
+    background-size:14px 14px;
+    font-family:'Inter',sans-serif;
+    color:var(--ink);
+  }
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  h1,h2,h3{font-family:'Fraunces',serif; margin:0;}
+
+  /* ---- Top bar ---- */
+  .topbar{
+    background:var(--ink);
+    color:#fff;
+    padding:14px 20px;
+    display:flex;
+    align-items:center;
+    gap:18px;
+    position:sticky; top:0; z-index:20;
+  }
+  .topbar .brand{font-family:'Fraunces',serif; font-weight:700; font-size:19px; letter-spacing:.2px;}
+  .topbar .brand span{color:var(--gold);}
+  .topbar nav{display:flex; gap:4px; flex:1;}
+  .topbar nav button{
+    background:transparent; border:none; color:#cfd6e6; font-family:'Inter';
+    font-size:13px; padding:8px 12px; border-radius:6px; cursor:pointer;
+  }
+  .topbar nav button.active{background:rgba(255,255,255,0.12); color:#fff;}
+  .whoami{font-size:12px; color:#cfd6e6; display:flex; align-items:center; gap:8px;}
+  .switch-role{
+    background:var(--gold); color:var(--ink); border:none; padding:6px 10px;
+    border-radius:5px; font-size:11px; font-weight:600; cursor:pointer; font-family:'Inter';
+  }
+
+  .wrap{max-width:640px; margin:0 auto; padding:22px 16px 70px;}
+  .screen{display:none;}
+  .screen.active{display:block;}
+
+  /* ---- ID badge tag ---- */
+  .tag{
+    display:inline-flex; align-items:center; gap:5px;
+    font-family:'IBM Plex Mono'; font-size:10.5px; letter-spacing:.03em;
+    padding:2px 8px; border-radius:3px; text-transform:uppercase;
+    background:#EDEBE3; color:var(--ink); border:1px solid var(--line);
+  }
+  .tag.job{background:#E7F0E9; color:var(--sage); border-color:#cfe3d3;}
+  .tag.announcement{background:#FBF0DC; color:#8a6a12; border-color:#f0dfad;}
+  .tag.pending{background:#FBEAE7; color:var(--coral); border-color:#f2cfc9;}
+
+  /* ---- Index card (signature element) ---- */
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:3px;
+    padding:18px 18px 16px;
+    margin-bottom:16px;
+    position:relative;
+    box-shadow:0 1px 0 rgba(20,33,61,0.03), 0 6px 14px rgba(20,33,61,0.05);
+  }
+  .card::before{
+    content:'';
+    position:absolute; top:-6px; left:22px;
+    width:12px; height:12px; border-radius:50%;
+    background:var(--gold);
+    box-shadow:0 2px 3px rgba(0,0,0,0.25);
+  }
+  .card h3{font-size:17px; margin-bottom:4px;}
+  .meta{font-family:'IBM Plex Mono'; font-size:11px; color:var(--muted); margin-bottom:10px;}
+  .card p{font-size:14.5px; line-height:1.55; margin:0 0 6px;}
+
+  .comment{border-top:1px solid var(--line); padding:8px 0 0; margin-top:8px; font-size:13px;}
+  .comment b{font-family:'Fraunces'; font-weight:600;}
+
+  form.stack{display:flex; flex-direction:column; gap:10px; margin-top:6px;}
+  label{font-size:12px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.04em;}
+  input,select,textarea{
+    font-family:'Inter'; font-size:14px; padding:10px 11px;
+    border:1px solid var(--line); border-radius:5px; background:#fff; width:100%;
+  }
+  textarea{resize:vertical; min-height:64px;}
+  button.btn{
+    background:var(--ink); color:#fff; border:none; padding:10px 16px;
+    border-radius:5px; font-family:'Inter'; font-weight:600; font-size:13.5px;
+    cursor:pointer; align-self:flex-start;
+  }
+  button.btn.gold{background:var(--gold); color:var(--ink);}
+  button.btn.outline{background:transparent; color:var(--ink); border:1px solid var(--ink);}
+  button.btn.reject{background:var(--coral);}
+  button.btn.small{padding:6px 10px; font-size:12px;}
+  .row{display:flex; gap:8px;}
+  .row .btn{flex:none;}
+
+  .auth-shell{
+    max-width:380px; margin:60px auto; background:#fff; border:1px solid var(--line);
+    border-radius:6px; padding:32px; box-shadow:0 10px 30px rgba(20,33,61,0.08);
+  }
+  .auth-shell h2{font-size:24px; margin-bottom:6px;}
+  .auth-shell p.sub{color:var(--muted); font-size:13.5px; margin-bottom:18px;}
+  .hint{
+    background:#F4F6F2; border:1px dashed #b9c9bd; border-radius:5px;
+    padding:10px 12px; font-family:'IBM Plex Mono'; font-size:12px; color:var(--sage); margin-top:6px;
+  }
+  .link{color:var(--ink); font-size:13px; text-decoration:underline; cursor:pointer;}
+
+  .empty{text-align:center; padding:30px 10px; color:var(--muted); font-size:13.5px;}
+  .section-title{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:12px;}
+  .section-title h2{font-size:19px;}
+  .count-pill{
+    background:var(--coral); color:#fff; font-family:'IBM Plex Mono'; font-size:11px;
+    padding:1px 8px; border-radius:10px;
+  }
+  .pending-row{display:flex; justify-content:space-between; align-items:flex-start; gap:10px; border-bottom:1px solid var(--line); padding:12px 0;}
+  .pending-row:last-child{border-bottom:none;}
+  .toast{
+    position:fixed; bottom:18px; left:50%; transform:translateX(-50%);
+    background:var(--ink); color:#fff; padding:10px 18px; border-radius:6px;
+    font-size:13px; z-index:50; opacity:0; pointer-events:none; transition:opacity .25s;
+  }
+  .toast.show{opacity:1;}
+  .demo-banner{
+    background:#EDEBE3; border-bottom:1px solid var(--line); padding:6px 16px;
+    font-family:'IBM Plex Mono'; font-size:11px; text-align:center; color:var(--muted);
+  }
+</style>
+</head>
+<body>
+
+<div class="demo-banner">DEMO MODE — mock data, nothing is saved to a real server</div>
+
+<div id="app"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------------- Mock data ---------------- */
+let state = {
+  role: null,        // current viewer role for demo purposes
+  screen: 'welcome',
+  regStep: 'form',
+  regDraft: {},
+  users: [
+    {id:1, name:'Ronesh Prasad', role:'student', status:'approved'},
+    {id:2, name:'Raksha Prasad', role:'student', status:'approved'},
+    {id:3, name:'Dr. Mereseini Waqa', role:'faculty', status:'approved'},
+    {id:4, name:'BSP Fiji Recruiting', role:'recruiter', status:'approved'},
+    {id:5, name:'Careers & Placement Office', role:'staff', status:'approved'},
+    {id:6, name:'Litia Tuilagi', role:'student', status:'pending'},
+  ],
+  posts: [
+    {id:1, userId:3, type:'announcement', title:'CIN623 Assignment 2 deadline extended', content:'Given feedback from several students, the Access assignment deadline moves to Friday 5pm. Submit via the usual portal.', status:'approved', comments:[{by:'Ronesh Prasad', text:'Appreciate it, thank you!'}]},
+    {id:2, userId:4, type:'job', title:'Graduate IT Analyst', content:'BSP Fiji is hiring graduate analysts for our Labasa branch. Great fit for final-year IS/Commerce students.', status:'approved', location:'Labasa', deadline:'2026-08-15', comments:[]},
+    {id:3, userId:2, type:'general', title:'', content:'Anyone free to form a study group for the CIN708 ERP presentation this weekend?', status:'approved', comments:[{by:'Ronesh Prasad', text:'Count me in — library, Saturday 10am?'}]},
+    {id:4, userId:5, type:'announcement', title:'Career Fair — Labasa Campus', content:'Our annual career fair is confirmed for next month. Recruiters from six companies will attend.', status:'approved', comments:[]},
+    {id:5, userId:6, type:'general', title:'', content:'Just joined — excited to connect with everyone in the IS programme!', status:'pending', comments:[]},
+  ],
+  events: [
+    {id:1, title:'Career Fair — Labasa Campus', date:'2026-08-20 09:00', location:'Main Hall', status:'approved', by:'Careers & Placement Office'},
+    {id:2, title:'CIN708 Group Presentations', date:'2026-08-05 13:00', location:'Room 204', status:'pending', by:'Careers & Placement Office'},
+  ],
+  messages: [
+    {from:2, to:1, text:'Hey! Did you finish the ERD for the exam paper?'},
+    {from:1, to:2, text:'Almost — normalizing the last table now. Sending it tonight.'},
+  ],
+};
+let nextId = 100;
+
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 1800);
+}
+function userById(id){ return state.users.find(u=>u.id===id); }
+function currentUser(){ return state.users.find(u=>u.role===state.role); }
+function go(screen){ state.screen = screen; render(); }
+
+/* ---------------- Screens ---------------- */
+function renderWelcome(){
+  return `
+  <div class="auth-shell">
+    <h2>Campus Connect</h2>
+    <p class="sub">A demo of the college social network — students, faculty, recruiters and staff in one place.</p>
+    <label>View the demo as</label>
+    <form class="stack" onsubmit="event.preventDefault(); loginAs(document.getElementById('roleSel').value)">
+      <select id="roleSel">
+        <option value="student">Student — Ronesh Prasad</option>
+        <option value="faculty">Faculty — Dr. Mereseini Waqa</option>
+        <option value="recruiter">Recruiter — BSP Fiji</option>
+        <option value="staff">Placement Staff</option>
+        <option value="admin">Admin</option>
+      </select>
+      <button class="btn gold" type="submit">Enter as this role</button>
+    </form>
+    <p style="margin-top:18px; text-align:center;">
+      <span class="link" onclick="go('register')">Or walk through the sign-up flow →</span>
+    </p>
+  </div>`;
+}
+
+function loginAs(role){
+  state.role = role;
+  go('feed');
+}
+
+function renderRegister(){
+  return `
+  <div class="auth-shell">
+    <h2>Create an Account</h2>
+    <p class="sub">Step 1 of 3 — basic details</p>
+    <form class="stack" onsubmit="event.preventDefault(); submitRegister(this)">
+      <label>Account Type</label>
+      <select name="role" required>
+        <option value="student">Student</option>
+        <option value="faculty">Faculty</option>
+        <option value="recruiter">Recruiter</option>
+        <option value="staff">Placement Officer / Staff</option>
+      </select>
+      <label>Full Name</label>
+      <input name="name" placeholder="Litia Tuilagi" required>
+      <label>Email</label>
+      <input name="email" type="email" placeholder="litia@example.com" required>
+      <label>Phone Number (optional)</label>
+      <input name="phone" placeholder="+679 XXXXXXX">
+      <label>Password</label>
+      <input name="password" type="password" required>
+      <button class="btn gold" type="submit">Sign Up</button>
+    </form>
+    <p style="margin-top:14px; text-align:center;"><span class="link" onclick="go('welcome')">← Back</span></p>
+  </div>`;
+}
+function submitRegister(form){
+  state.regDraft = {
+    role: form.role.value, name: form.name.value,
+    email: form.email.value, phone: form.phone.value,
+  };
+  state.demoOtp = String(Math.floor(100000 + Math.random()*900000));
+  go('verify');
+}
+
+function renderVerify(){
+  return `
+  <div class="auth-shell">
+    <h2>Verify Your Email</h2>
+    <p class="sub">We sent a 6-digit code to ${state.regDraft.email}.</p>
+    <div class="hint">Demo mode — your code is <b>${state.demoOtp}</b> (a real deployment emails/texts this instead).</div>
+    <form class="stack" style="margin-top:14px" onsubmit="event.preventDefault(); verifyOtp(this)">
+      <label>Verification Code</label>
+      <input name="code" maxlength="6" required autofocus>
+      <button class="btn gold" type="submit">Verify</button>
+    </form>
+  </div>`;
+}
+function verifyOtp(form){
+  if(form.code.value.trim() === state.demoOtp){
+    go('profileSetup');
+  } else {
+    toast('Incorrect code — try ' + state.demoOtp + ' for this demo');
+  }
+}
+
+function renderProfileSetup(){
+  const role = state.regDraft.role;
+  let fields = '';
+  if(role==='student') fields = `
+    <label>Student ID Number</label><input name="f1" placeholder="S11123456" required>
+    <label>Programme</label><input name="f2" placeholder="Bachelor of Commerce - Information Systems" required>
+    <label>Year of Study</label><input name="f3" type="number" min="1" max="6" required>`;
+  else if(role==='faculty') fields = `
+    <label>Staff ID Number</label><input name="f1" required>
+    <label>Department</label><input name="f2" placeholder="School of Business" required>`;
+  else if(role==='recruiter') fields = `
+    <label>Company Name</label><input name="f1" placeholder="BSP Fiji" required>
+    <label>Industry</label><input name="f2" placeholder="Banking">`;
+  else fields = `
+    <label>Office</label><input name="f1" placeholder="Careers & Placement Office" required>
+    <label>Position Title</label><input name="f2" required>`;
+  return `
+  <div class="auth-shell">
+    <h2>Complete Your Profile</h2>
+    <p class="sub">Step 3 of 3 — this appears on your profile once approved.</p>
+    <form class="stack" onsubmit="event.preventDefault(); submitProfile()">
+      ${fields}
+      <button class="btn gold" type="submit">Save & Submit for Approval</button>
+    </form>
+  </div>`;
+}
+function submitProfile(){
+  const u = {id: ++nextId, name: state.regDraft.name, role: state.regDraft.role, status:'pending'};
+  state.users.push(u);
+  go('pendingApproval');
+}
+
+function renderPendingApproval(){
+  return `
+  <div class="auth-shell">
+    <h2>Registration Submitted</h2>
+    <p class="sub">Your account and profile are in for review. An admin needs to approve it before you can log in — try switching to the Admin view to see this happen.</p>
+    <button class="btn outline" onclick="go('welcome')">Back to start</button>
+  </div>`;
+}
+
+/* ---- Main app shell ---- */
+function topNav(){
+  const me = currentUser();
+  const tabs = [['feed','Feed'],['events','Events'],['messages','Messages']];
+  if(me && me.role==='admin') tabs.push(['admin','Admin Panel']);
+  return `
+  <div class="topbar">
+    <div class="brand">Campus<span>Connect</span></div>
+    <nav>${tabs.map(([k,label])=>`<button class="${state.screen===k?'active':''}" onclick="go('${k}')">${label}</button>`).join('')}</nav>
+    <div class="whoami">
+      ${me?`${me.name} · ${me.role}`:''}
+      <button class="switch-role" onclick="go('welcome')">Switch role</button>
+    </div>
+  </div>`;
+}
+
+function badge(type){
+  const label = type.charAt(0).toUpperCase()+type.slice(1);
+  return `<span class="tag ${type}">${label}</span>`;
+}
+
+function renderFeed(){
+  const approved = state.posts.filter(p=>p.status==='approved');
+  const me = currentUser();
+  return topNav() + `<div class="wrap">
+    <div class="card">
+      <h3 style="font-size:15px; margin-bottom:10px;">Share an update</h3>
+      <form class="stack" onsubmit="event.preventDefault(); newPost(this)">
+        <select name="type">
+          <option value="general">General Post</option>
+          <option value="job">Job Update</option>
+          ${['faculty','staff','admin'].includes(me.role)?'<option value="announcement">Announcement</option>':''}
+        </select>
+        <textarea name="content" placeholder="What's on your mind?" required></textarea>
+        <button class="btn" type="submit">Post (goes to admin review)</button>
+      </form>
+    </div>
+    ${approved.map(postCard).join('') || '<div class="empty">No posts yet.</div>'}
+  </div>`;
+}
+function postCard(p){
+  const u = userById(p.userId);
+  return `<div class="card">
+    <div class="meta">${u.name} · ${u.role} ${badge(p.type)}</div>
+    ${p.title?`<h3>${p.title}</h3>`:''}
+    <p>${p.content}</p>
+    ${p.type==='job'&&p.location?`<div class="meta">📍 ${p.location} · Deadline ${p.deadline}</div>`:''}
+    ${p.comments.map(c=>`<div class="comment"><b>${c.by}:</b> ${c.text}</div>`).join('')}
+    <form class="row" style="margin-top:10px" onsubmit="event.preventDefault(); addComment(${p.id}, this)">
+      <input name="c" placeholder="Write a comment..." style="flex:1">
+      <button class="btn small" type="submit">Reply</button>
+    </form>
+  </div>`;
+}
+function newPost(form){
+  const me = currentUser();
+  state.posts.unshift({id:++nextId, userId:me.id, type:form.type.value, title:'', content:form.content.value, status:'pending', comments:[]});
+  if(!state.users.find(u=>u.id===me.id)) state.users.push(me);
+  toast('Submitted — awaiting admin approval');
+  render();
+}
+function addComment(postId, form){
+  const me = currentUser();
+  const p = state.posts.find(p=>p.id===postId);
+  if(form.c.value.trim()){ p.comments.push({by:me.name, text:form.c.value}); render(); }
+}
+
+function renderEvents(){
+  const me = currentUser();
+  const approved = state.events.filter(e=>e.status==='approved');
+  const canPost = ['staff','admin'].includes(me.role);
+  return topNav() + `<div class="wrap">
+    ${canPost?`<div class="card">
+      <h3 style="font-size:15px; margin-bottom:10px;">Post an Event</h3>
+      <form class="stack" onsubmit="event.preventDefault(); newEvent(this)">
+        <input name="title" placeholder="Event title" required>
+        <input name="date" type="datetime-local" required>
+        <input name="location" placeholder="Location">
+        <button class="btn" type="submit">Submit Event</button>
+      </form>
+    </div>`:''}
+    ${approved.map(e=>`<div class="card">
+      <h3>${e.title}</h3>
+      <div class="meta">${e.date} · ${e.location} · posted by ${e.by}</div>
+    </div>`).join('') || '<div class="empty">No upcoming events.</div>'}
+  </div>`;
+}
+function newEvent(form){
+  state.events.unshift({id:++nextId, title:form.title.value, date:form.date.value.replace('T',' '), location:form.location.value, status:'pending', by:currentUser().name});
+  toast('Event submitted for approval');
+  render();
+}
+
+function renderMessages(){
+  const me = currentUser();
+  const contacts = state.users.filter(u=>u.status==='approved' && u.id!==me.id);
+  const withId = state.chatWith || (contacts[0] && contacts[0].id);
+  const thread = state.messages.filter(m=>(m.from===me.id&&m.to===withId)||(m.from===withId&&m.to===me.id));
+  return topNav() + `<div class="wrap">
+    <div class="card">
+      <h3 style="font-size:15px; margin-bottom:10px;">Contacts</h3>
+      ${contacts.map(c=>`<div class="pending-row">
+        <span>${c.name} ${badge(c.role==='admin'?'general':c.role)}</span>
+        <button class="btn small ${withId===c.id?'':'outline'}" onclick="state.chatWith=${c.id}; render();">Chat</button>
+      </div>`).join('')}
+    </div>
+    <div class="card">
+      <h3 style="font-size:15px; margin-bottom:10px;">Conversation with ${withId?userById(withId).name:'—'}</h3>
+      ${thread.map(m=>`<div class="comment"><b>${m.from===me.id?'You':userById(m.from).name}:</b> ${m.text}</div>`).join('') || '<div class="empty">No messages yet.</div>'}
+      <form class="row" style="margin-top:10px" onsubmit="event.preventDefault(); sendMsg(this, ${withId})">
+        <input name="t" placeholder="Type a message..." style="flex:1" required>
+        <button class="btn small" type="submit">Send</button>
+      </form>
+    </div>
+  </div>`;
+}
+function sendMsg(form, to){
+  state.messages.push({from:currentUser().id, to, text:form.t.value});
+  render();
+}
+
+function renderAdmin(){
+  const pendingUsers = state.users.filter(u=>u.status==='pending');
+  const pendingPosts = state.posts.filter(p=>p.status==='pending');
+  const pendingEvents = state.events.filter(e=>e.status==='pending');
+  return topNav() + `<div class="wrap">
+    <div class="section-title"><h2>Pending Registrations</h2>${pendingUsers.length?`<span class="count-pill">${pendingUsers.length}</span>`:''}</div>
+    <div class="card">
+      ${pendingUsers.map(u=>`<div class="pending-row">
+        <span>${u.name} ${badge(u.role)}</span>
+        <span class="row">
+          <button class="btn small" onclick="decide('user',${u.id},'approved')">Approve</button>
+          <button class="btn small reject" onclick="decide('user',${u.id},'rejected')">Reject</button>
+        </span>
+      </div>`).join('') || '<div class="empty">Nothing pending.</div>'}
+    </div>
+
+    <div class="section-title"><h2>Pending Posts</h2>${pendingPosts.length?`<span class="count-pill">${pendingPosts.length}</span>`:''}</div>
+    <div class="card">
+      ${pendingPosts.map(p=>`<div class="pending-row">
+        <span><b>${userById(p.userId).name}</b> ${badge(p.type)}<br><span class="meta">${p.content.slice(0,70)}${p.content.length>70?'…':''}</span></span>
+        <span class="row">
+          <button class="btn small" onclick="decide('post',${p.id},'approved')">Approve</button>
+          <button class="btn small reject" onclick="decide('post',${p.id},'rejected')">Reject</button>
+        </span>
+      </div>`).join('') || '<div class="empty">Nothing pending.</div>'}
+    </div>
+
+    <div class="section-title"><h2>Pending Events</h2>${pendingEvents.length?`<span class="count-pill">${pendingEvents.length}</span>`:''}</div>
+    <div class="card">
+      ${pendingEvents.map(e=>`<div class="pending-row">
+        <span><b>${e.title}</b><br><span class="meta">${e.date} · ${e.location}</span></span>
+        <span class="row">
+          <button class="btn small" onclick="decide('event',${e.id},'approved')">Approve</button>
+          <button class="btn small reject" onclick="decide('event',${e.id},'rejected')">Reject</button>
+        </span>
+      </div>`).join('') || '<div class="empty">Nothing pending.</div>'}
+    </div>
+  </div>`;
+}
+function decide(kind, id, status){
+  if(kind==='user'){ state.users.find(u=>u.id===id).status = status; }
+  if(kind==='post'){ state.posts.find(p=>p.id===id).status = status; }
+  if(kind==='event'){ state.events.find(e=>e.id===id).status = status; }
+  toast(status==='approved' ? 'Approved' : 'Rejected');
+  render();
+}
+
+/* ---------------- Router ---------------- */
+function render(){
+  const app = document.getElementById('app');
+  const map = {
+    welcome: renderWelcome,
+    register: renderRegister,
+    verify: renderVerify,
+    profileSetup: renderProfileSetup,
+    pendingApproval: renderPendingApproval,
+    feed: renderFeed,
+    events: renderEvents,
+    messages: renderMessages,
+    admin: renderAdmin,
+  };
+  app.innerHTML = map[state.screen]();
+}
+render();
+</script>
+</body>
+</html>
