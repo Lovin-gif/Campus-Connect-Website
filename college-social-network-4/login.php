@@ -21,8 +21,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['profile_setup_user_id'] = $user['user_id'];
         header('Location: profile_setup.php');
         exit;
-    } elseif ($user['status'] !== 'approved') {
-        $error = 'Your account is still pending admin approval.';
     } else {
         $_SESSION['user_id'] = $user['user_id'];
         $_SESSION['role'] = $user['role'];

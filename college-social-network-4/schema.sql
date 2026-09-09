@@ -9,7 +9,8 @@ USE college_social_network;
 -- ------------------------------------------------------------
 -- 1. USERS
 -- One table for all account types; role determines permissions.
--- Registration starts as 'pending' until admin approves it.
+-- Registration is auto-approved; `status` remains for admins to
+-- manually suspend or reject an account after the fact.
 -- ------------------------------------------------------------
 CREATE TABLE users (
     user_id         INT AUTO_INCREMENT PRIMARY KEY,
@@ -21,7 +22,7 @@ CREATE TABLE users (
     email_verified_at TIMESTAMP NULL,
     phone_verified_at TIMESTAMP NULL,
     profile_completed BOOLEAN NOT NULL DEFAULT FALSE,
-    status          ENUM('pending','approved','rejected','suspended') NOT NULL DEFAULT 'pending',
+    status          ENUM('pending','approved','rejected','suspended') NOT NULL DEFAULT 'approved',
     created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     approved_by     INT NULL,
     approved_at     TIMESTAMP NULL,
@@ -84,7 +85,8 @@ CREATE TABLE staff_profiles (
 
 -- ------------------------------------------------------------
 -- 3. POSTS (general updates, job posts, announcements)
--- All posts go through admin moderation before going live.
+-- Posts publish immediately; `status` remains so an admin can
+-- reject/hide a post after the fact.
 -- ------------------------------------------------------------
 CREATE TABLE posts (
     post_id         INT AUTO_INCREMENT PRIMARY KEY,
@@ -92,7 +94,7 @@ CREATE TABLE posts (
     post_type       ENUM('general','job','announcement') NOT NULL DEFAULT 'general',
     title           VARCHAR(200),
     content         TEXT NOT NULL,
-    status          ENUM('pending','approved','rejected') NOT NULL DEFAULT 'pending',
+    status          ENUM('pending','approved','rejected') NOT NULL DEFAULT 'approved',
     reviewed_by     INT NULL,
     created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,

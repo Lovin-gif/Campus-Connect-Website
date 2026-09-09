@@ -75,7 +75,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $pdo->commit();
 
         unset($_SESSION['profile_setup_user_id']);
-        header('Location: pending_approval.php');
+        $_SESSION['user_id'] = $userId;
+        $_SESSION['role'] = $role;
+        header('Location: dashboard.php');
         exit;
     } catch (Exception $e) {
         $pdo->rollBack();

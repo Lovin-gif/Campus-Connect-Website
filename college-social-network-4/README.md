@@ -1,7 +1,7 @@
 # College Social Networking Web Project
 
 A PHP + MySQL platform connecting students, faculty, recruiters, and
-placement staff — with admin-moderated registrations and posts.
+placement staff.
 
 ## Setup
 
@@ -26,10 +26,7 @@ self-registering as admin. After registering a normal account and
 completing its profile, promote it manually:
 
 ```sql
-UPDATE users
-SET role = 'admin', status = 'approved',
-    email_verified_at = NOW(), profile_completed = TRUE
-WHERE email = 'your-admin-email@example.com';
+UPDATE users SET role = 'admin' WHERE email = 'your-admin-email@example.com';
 ```
 
 Then log in — you'll see the "Admin Panel" link in the top nav.
@@ -38,12 +35,10 @@ Then log in — you'll see the "Admin Panel" link in the top nav.
 
 - **Auth**: signup with email (required) + phone (optional), OTP
   verification on first sign-in, login with either identifier.
-- **Profiles**: role-specific profile form shown right after signup.
-- **Admin approval**: new accounts stay `pending` until an admin
-  approves them (`admin/users.php`).
-- **Feed**: general posts, job updates, and announcements — all
-  admin-moderated before appearing (`admin/posts.php`). Comments on
-  each post.
+- **Profiles**: role-specific profile form shown right after signup;
+  the account is logged in as soon as the profile is completed.
+- **Feed**: general posts, job updates, and announcements, published
+  immediately. Comments on each post.
 - **Events**: staff/admin post events; admin-moderated
   (`admin/events.php`).
 - **Messaging**: simple direct-message chat between any two approved

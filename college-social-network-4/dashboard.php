@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     if ($content !== '') {
         $stmt = $pdo->prepare(
             "INSERT INTO posts (user_id, post_type, title, content, status)
-             VALUES (:uid, :type, :title, :content, 'pending')"
+             VALUES (:uid, :type, :title, :content, 'approved')"
         );
         $stmt->execute([':uid' => $me['user_id'], ':type' => $postType, ':title' => $title, ':content' => $content]);
         $postId = (int) $pdo->lastInsertId();
@@ -69,7 +69,7 @@ foreach ($allComments as $c) {
 <div class="card">
     <h3>Share an update</h3>
     <?php if (!empty($_GET['posted'])): ?>
-        <p class="meta">Your post was submitted and is awaiting admin approval.</p>
+        <p class="meta">Your post has been published.</p>
     <?php endif; ?>
     <form method="POST" id="postForm">
         <input type="hidden" name="action" value="new_post">
@@ -88,7 +88,7 @@ foreach ($allComments as $c) {
             <input type="date" name="deadline">
             <input type="url" name="apply_link" placeholder="Apply link">
         </div>
-        <button type="submit">Post (goes to admin review)</button>
+        <button type="submit">Post</button>
     </form>
 </div>
 

@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $stmt = $pdo->prepare(
                 "INSERT INTO users (role, full_name, email, phone_number, password_hash, status)
-                 VALUES (:role, :name, :email, :phone, :hash, 'pending')"
+                 VALUES (:role, :name, :email, :phone, :hash, 'approved')"
             );
             $stmt->execute([
                 ':role' => $role, ':name' => $fullName, ':email' => $email,

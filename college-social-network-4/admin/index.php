@@ -4,8 +4,6 @@ require_login();
 $me = current_user($pdo);
 if ($me['role'] !== 'admin') { header('Location: /dashboard.php'); exit; }
 
-$pendingUsers = $pdo->query("SELECT COUNT(*) c FROM users WHERE status = 'pending'")->fetch()['c'];
-$pendingPosts = $pdo->query("SELECT COUNT(*) c FROM posts WHERE status = 'pending'")->fetch()['c'];
 $pendingEvents = $pdo->query("SELECT COUNT(*) c FROM events WHERE status = 'pending'")->fetch()['c'];
 $pageTitle = 'Admin Panel';
 ?>
@@ -27,8 +25,6 @@ $pageTitle = 'Admin Panel';
 <main class="container">
     <div class="card">
         <h3>Admin Overview</h3>
-        <div class="pending-row"><span>Pending user registrations</span><a class="btn" href="/admin/users.php"><?= $pendingUsers ?> to review</a></div>
-        <div class="pending-row"><span>Pending posts</span><a class="btn" href="/admin/posts.php"><?= $pendingPosts ?> to review</a></div>
         <div class="pending-row"><span>Pending events</span><a class="btn" href="/admin/events.php"><?= $pendingEvents ?> to review</a></div>
     </div>
 </main>
