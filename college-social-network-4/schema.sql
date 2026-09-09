@@ -96,9 +96,14 @@ CREATE TABLE posts (
     content         TEXT NOT NULL,
     status          ENUM('pending','approved','rejected') NOT NULL DEFAULT 'approved',
     reviewed_by     INT NULL,
+    -- Set when this row is a share/repost of another post. Always
+    -- points at the original (never at another share), so shares
+    -- don't chain.
+    shared_from_post_id INT NULL,
     created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
-    FOREIGN KEY (reviewed_by) REFERENCES users(user_id) ON DELETE SET NULL
+    FOREIGN KEY (reviewed_by) REFERENCES users(user_id) ON DELETE SET NULL,
+    FOREIGN KEY (shared_from_post_id) REFERENCES posts(post_id) ON DELETE SET NULL
 );
 
 -- Extra fields specific to job posts (kept out of `posts` to avoid nulls everywhere)
@@ -120,6 +125,18 @@ CREATE TABLE comments (
     user_id         INT NOT NULL,
     content         TEXT NOT NULL,
     created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (post_id) REFERENCES posts(post_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+-- ------------------------------------------------------------
+-- 4b. LIKES on posts. One like per user per post (toggled on/off).
+-- ------------------------------------------------------------
+CREATE TABLE post_likes (
+    post_id         INT NOT NULL,
+    user_id         INT NOT NULL,
+    created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (post_id, user_id),
     FOREIGN KEY (post_id) REFERENCES posts(post_id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
@@ -171,6 +188,7 @@ CREATE TABLE notifications (
 -- Indexes for common lookups
 -- ------------------------------------------------------------
 CREATE INDEX idx_posts_status ON posts(status);
+CREATE INDEX idx_posts_shared_from ON posts(shared_from_post_id);
 CREATE INDEX idx_users_status ON users(status);
 CREATE INDEX idx_messages_receiver ON messages(receiver_id, is_read);
 CREATE INDEX idx_events_date ON events(event_date);

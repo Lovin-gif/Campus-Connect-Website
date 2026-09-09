@@ -58,6 +58,14 @@ button, .btn {
     display: inline-block;
 }
 button.reject, .btn.reject { background: #b00020; }
+.shared-card { border: 1px solid #e0e0e0; border-radius: 8px; padding: 14px; margin-bottom: 10px; background: #fafbfc; }
+.shared-card h3 { margin: 0 0 6px; font-size: 15px; }
+
+.actions { display: flex; gap: 8px; margin: 10px 0; }
+.action-form { display: inline-block; }
+.action-btn { background: #eef1f4; color: #333; }
+.action-btn.liked { background: #1a3c6e; color: #fff; }
+
 .comment { border-top: 1px solid #eee; padding: 8px 0; font-size: 13px; }
 .pending-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 10px 0; }
 .tabs { display: flex; gap: 16px; margin-bottom: 16px; }
