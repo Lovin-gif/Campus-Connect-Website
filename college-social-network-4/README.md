@@ -18,19 +18,6 @@ placement staff.
 4. Visit `http://localhost:8000/register.php` to create your first
    account.
 
-## Creating the first Admin account
-
-The signup form only offers student/faculty/recruiter/staff — admin
-accounts are created directly in the database to avoid anyone
-self-registering as admin. After registering a normal account and
-completing its profile, promote it manually:
-
-```sql
-UPDATE users SET role = 'admin' WHERE email = 'your-admin-email@example.com';
-```
-
-Then log in — you'll see the "Admin Panel" link in the top nav.
-
 ## What's built
 
 - **Auth**: signup with email (required) + phone (optional), OTP
@@ -39,8 +26,7 @@ Then log in — you'll see the "Admin Panel" link in the top nav.
   the account is logged in as soon as the profile is completed.
 - **Feed**: general posts, job updates, and announcements, published
   immediately. Comments on each post.
-- **Events**: staff/admin post events; admin-moderated
-  (`admin/events.php`).
+- **Events**: staff/admin post events, published immediately.
 - **Messaging**: simple direct-message chat between any two approved
   users (`messages.php`), polling-based (refresh to see new
   messages).

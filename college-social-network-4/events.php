@@ -13,7 +13,7 @@ if ($canPost && $_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($title !== '' && $eventDate !== '') {
         $pdo->prepare(
             "INSERT INTO events (posted_by, title, description, event_date, location, status)
-             VALUES (:uid, :title, :desc, :date, :loc, 'pending')"
+             VALUES (:uid, :title, :desc, :date, :loc, 'approved')"
         )->execute([
             ':uid' => $me['user_id'], ':title' => $title, ':desc' => $description,
             ':date' => $eventDate, ':loc' => $location,
@@ -32,7 +32,7 @@ $events = $pdo->query(
 <?php if ($canPost): ?>
 <div class="card">
     <h3>Post an Event</h3>
-    <?php if (!empty($_GET['posted'])): ?><p class="meta">Submitted for admin approval.</p><?php endif; ?>
+    <?php if (!empty($_GET['posted'])): ?><p class="meta">Your event has been published.</p><?php endif; ?>
     <form method="POST">
         <input type="text" name="title" placeholder="Event title" required>
         <textarea name="description" rows="3" placeholder="Description"></textarea>

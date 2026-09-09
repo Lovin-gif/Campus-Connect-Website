@@ -140,6 +140,8 @@ CREATE TABLE messages (
 
 -- ------------------------------------------------------------
 -- 6. EVENTS (posted by staff/placement officers)
+-- Events publish immediately; `status` remains so an admin can
+-- reject/hide an event after the fact.
 -- ------------------------------------------------------------
 CREATE TABLE events (
     event_id        INT AUTO_INCREMENT PRIMARY KEY,
@@ -148,7 +150,7 @@ CREATE TABLE events (
     description     TEXT,
     event_date      DATETIME NOT NULL,
     location        VARCHAR(150),
-    status          ENUM('pending','approved','rejected') NOT NULL DEFAULT 'pending',
+    status          ENUM('pending','approved','rejected') NOT NULL DEFAULT 'approved',
     created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (posted_by) REFERENCES users(user_id) ON DELETE CASCADE
 );

@@ -16,9 +16,6 @@ $me = current_user($pdo);
     <a href="/dashboard.php">Feed</a>
     <a href="/events.php">Events</a>
     <a href="/messages.php">Messages</a>
-    <?php if ($me && $me['role'] === 'admin'): ?>
-        <a href="/admin/index.php">Admin Panel</a>
-    <?php endif; ?>
     <span class="spacer"></span>
     <span class="me">Hi, <?= htmlspecialchars($me['full_name']) ?> (<?= htmlspecialchars($me['role']) ?>)</span>
     <a href="/logout.php">Log out</a>
