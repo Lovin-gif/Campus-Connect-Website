@@ -88,13 +88,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Complete Your Profile</title>
+    <title>Complete Your Profile - Campus Connect</title>
+    <link rel="icon" type="image/svg+xml" href="assets/img/logo-mark.svg">
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
+    <a class="auth-brand" href="index.php">
+        <img src="assets/img/logo-mark.svg" alt="">
+        <span>Campus<strong>Connect</strong></span>
+    </a>
     <div class="auth-box">
         <h2>Complete Your Profile</h2>
-        <p>Almost done — this information appears on your profile once approved.</p>
+        <p>Almost done — this information appears on your profile.</p>
         <?php if ($error): ?><p class="error"><?= htmlspecialchars($error) ?></p><?php endif; ?>
         <form method="POST">
             <?php if ($role === 'student'): ?>
@@ -130,7 +135,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <input type="text" name="position_title" required>
             <?php endif; ?>
 
-            <button type="submit">Save Profile & Submit for Approval</button>
+            <button type="submit">Save Profile & Get Started</button>
         </form>
     </div>
 </body>

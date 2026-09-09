@@ -31,7 +31,7 @@ $events = $pdo->query(
 
 <?php if ($canPost): ?>
 <div class="card">
-    <h3>Post an Event</h3>
+    <h3><?= icon('calendar') ?> Post an Event</h3>
     <?php if (!empty($_GET['posted'])): ?><p class="meta">Your event has been published.</p><?php endif; ?>
     <form method="POST">
         <input type="text" name="title" placeholder="Event title" required>

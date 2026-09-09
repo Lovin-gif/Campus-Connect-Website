@@ -40,7 +40,7 @@ if ($withId) {
 ?>
 
 <div class="card">
-    <h3>Contacts</h3>
+    <h3><?= icon('network') ?> Contacts</h3>
     <?php foreach ($contacts as $c): ?>
         <div class="pending-row">
             <span><?= htmlspecialchars($c['full_name']) ?> <span class="badge"><?= htmlspecialchars($c['role']) ?></span></span>

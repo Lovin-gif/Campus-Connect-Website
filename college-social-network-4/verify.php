@@ -35,10 +35,15 @@ if (isset($_GET['resend'])) {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Verify Your Account</title>
+    <title>Verify Your Account - Campus Connect</title>
+    <link rel="icon" type="image/svg+xml" href="assets/img/logo-mark.svg">
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
+    <a class="auth-brand" href="index.php">
+        <img src="assets/img/logo-mark.svg" alt="">
+        <span>Campus<strong>Connect</strong></span>
+    </a>
     <div class="auth-box">
         <h2>Verify Your <?= $channel === 'email' ? 'Email' : 'Phone Number' ?></h2>
         <p>We sent a 6-digit code to your <?= $channel ?>. Enter it below to continue.</p>

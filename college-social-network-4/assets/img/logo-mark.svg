@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-labelledby="ccLogoTitle">
+  <title id="ccLogoTitle">Campus Connect logo</title>
+  <rect x="0" y="0" width="64" height="64" rx="18" fill="#167A46"/>
+  <rect x="21" y="30" width="22" height="9" rx="4.5" fill="#FFFFFF"/>
+  <polygon points="32,13 51,24 32,35 13,24" fill="#FFFFFF"/>
+  <path d="M50 24 C55 30 55 38 50 43" stroke="#E0A526" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <circle cx="50" cy="45" r="4.5" fill="#E0A526"/>
+</svg>

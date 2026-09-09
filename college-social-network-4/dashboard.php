@@ -153,7 +153,7 @@ foreach ($allComments as $c) {
             <span class="badge <?= $post['post_type'] ?>"><?= ucfirst($post['post_type']) ?></span>
         </div>
         <?php if ($post['shared_from_post_id']): ?>
-            <p class="meta">🔁 shared a post</p>
+            <p class="meta"><?= icon('share', 'icon') ?> shared a post</p>
             <div class="shared-card">
                 <div class="meta">
                     <?= htmlspecialchars($post['orig_author_name']) ?> · <?= htmlspecialchars($post['orig_author_role']) ?> ·
@@ -194,14 +194,14 @@ foreach ($allComments as $c) {
                 <input type="hidden" name="action" value="like">
                 <input type="hidden" name="post_id" value="<?= $post['post_id'] ?>">
                 <button type="submit" class="action-btn<?= $post['liked_by_me'] ? ' liked' : '' ?>">
-                    👍 <?= $post['liked_by_me'] ? 'Liked' : 'Like' ?><?= $post['like_count'] > 0 ? ' · ' . $post['like_count'] : '' ?>
+                    <?= icon('thumb') ?> <?= $post['liked_by_me'] ? 'Liked' : 'Like' ?><?= $post['like_count'] > 0 ? ' · ' . $post['like_count'] : '' ?>
                 </button>
             </form>
             <form method="POST" class="action-form">
                 <input type="hidden" name="action" value="share">
                 <input type="hidden" name="post_id" value="<?= $post['post_id'] ?>">
                 <button type="submit" class="action-btn">
-                    🔁 Share<?= $post['share_count'] > 0 ? ' · ' . $post['share_count'] : '' ?>
+                    <?= icon('share') ?> Share<?= $post['share_count'] > 0 ? ' · ' . $post['share_count'] : '' ?>
                 </button>
             </form>
         </div>

@@ -1,0 +1,62 @@
+/* ============================================================
+   Campus Connect - Design Tokens
+   Palette takes cues from Fiji National University's green &
+   gold, with a Pacific-ocean teal accent. Shared by style.css
+   (auth pages) and app.css (feed/events/messages), and by the
+   public landing page (index.php).
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Nunito:ital,wght@0,600;0,700;0,800;0,900;1,700&display=swap');
+
+:root {
+    /* Brand */
+    --color-primary: #167A46;
+    --color-primary-dark: #0F5C34;
+    --color-primary-light: #E4F5EA;
+    --color-on-primary: #FFFFFF;
+
+    --color-accent: #E0A526;
+    --color-accent-dark: #B8830E;
+    --color-accent-light: #FBF0D8;
+    --color-on-accent: #1A1204;
+
+    --color-pacific: #0E7C86;
+    --color-pacific-light: #DFF3F4;
+    --color-on-pacific: #FFFFFF;
+
+    /* Surfaces & text */
+    --color-bg: #FAF9F3;
+    --color-card: #FFFFFF;
+    --color-foreground: #163024;
+    --color-muted-foreground: #55705F;
+    --color-border: #DCE8DE;
+
+    --color-destructive: #DC2626;
+    --color-on-destructive: #FFFFFF;
+
+    /* Radius (clay-inspired: soft, chunky, tactile) */
+    --radius-outer: 28px;
+    --radius-card: 20px;
+    --radius-btn: 14px;
+
+    /* Shadows (offset "clay" shadow + soft ambient blur) */
+    --shadow-card: 0 3px 0 0 rgba(15, 92, 52, 0.08), 0 12px 28px -10px rgba(22, 122, 70, 0.20);
+    --shadow-clay: 0 4px 0 0 rgba(15, 92, 52, 0.16), 0 10px 26px -6px rgba(224, 165, 38, 0.28);
+    --shadow-pop: 0 6px 0 0 rgba(15, 92, 52, 0.14), 0 16px 40px -8px rgba(22, 122, 70, 0.28);
+
+    /* Type */
+    --font-display: 'Nunito', -apple-system, sans-serif;
+    --font-body: 'DM Sans', -apple-system, sans-serif;
+
+    /* Spacing (8pt rhythm) */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 16px;
+    --space-4: 24px;
+    --space-5: 32px;
+    --space-6: 48px;
+}
+
+.icon { width: 20px; height: 20px; vertical-align: -5px; flex-shrink: 0; }
+.icon-lg { width: 28px; height: 28px; vertical-align: -8px; }
+.icon-xl { width: 40px; height: 40px; }
