@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         $pdo->prepare("INSERT INTO messages (sender_id, receiver_id, content) VALUES (:s, :r, :c)")
             ->execute([':s' => $me['user_id'], ':r' => $receiverId, ':c' => $content]);
     }
-    header('Location: /messages.php?with=' . $receiverId);
+    header('Location: messages.php?with=' . $receiverId);
     exit;
 }
 
@@ -44,7 +44,7 @@ if ($withId) {
     <?php foreach ($contacts as $c): ?>
         <div class="pending-row">
             <span><?= htmlspecialchars($c['full_name']) ?> <span class="badge"><?= htmlspecialchars($c['role']) ?></span></span>
-            <a class="btn" href="/messages.php?with=<?= $c['user_id'] ?>">Chat</a>
+            <a class="btn" href="messages.php?with=<?= $c['user_id'] ?>">Chat</a>
         </div>
     <?php endforeach; ?>
 </div>

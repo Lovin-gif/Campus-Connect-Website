@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                 ':link' => trim($_POST['apply_link'] ?? ''),
             ]);
         }
-        header('Location: /dashboard.php?posted=1');
+        header('Location: dashboard.php?posted=1');
         exit;
     }
 }
@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         $pdo->prepare("INSERT INTO comments (post_id, user_id, content) VALUES (:pid, :uid, :content)")
             ->execute([':pid' => $postId, ':uid' => $me['user_id'], ':content' => $content]);
     }
-    header('Location: /dashboard.php#post-' . $postId);
+    header('Location: dashboard.php#post-' . $postId);
     exit;
 }
 
@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         $pdo->prepare("INSERT INTO post_likes (post_id, user_id) VALUES (:pid, :uid)")
             ->execute([':pid' => $postId, ':uid' => $me['user_id']]);
     }
-    header('Location: /dashboard.php#post-' . $postId);
+    header('Location: dashboard.php#post-' . $postId);
     exit;
 }
 
@@ -78,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
              VALUES (:uid, :type, NULL, '', 'approved', :root)"
         )->execute([':uid' => $me['user_id'], ':type' => $original['post_type'], ':root' => $rootId]);
     }
-    header('Location: /dashboard.php?shared=1#post-' . $postId);
+    header('Location: dashboard.php?shared=1#post-' . $postId);
     exit;
 }
 

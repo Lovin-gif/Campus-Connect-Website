@@ -66,7 +66,7 @@ function verify_otp(PDO $pdo, int $userId, string $channel, string $submittedCod
 function require_login(): void
 {
     if (empty($_SESSION['user_id'])) {
-        header('Location: /login.php');
+        header('Location: login.php');
         exit;
     }
 }

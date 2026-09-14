@@ -18,7 +18,7 @@ if ($canPost && $_SERVER['REQUEST_METHOD'] === 'POST') {
             ':uid' => $me['user_id'], ':title' => $title, ':desc' => $description,
             ':date' => $eventDate, ':loc' => $location,
         ]);
-        header('Location: /events.php?posted=1');
+        header('Location: events.php?posted=1');
         exit;
     }
 }
