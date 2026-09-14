@@ -7,7 +7,8 @@
     padding: 10px 24px;
     display: flex;
     align-items: center;
-    gap: 22px;
+    gap: 18px;
+    flex-wrap: wrap;
     box-shadow: var(--shadow-card);
 }
 .topnav a { color: #EAF7EF; text-decoration: none; font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; padding: 6px 4px; border-bottom: 2px solid transparent; }
@@ -18,9 +19,33 @@
 .topnav a.brand span strong { color: var(--color-accent); font-weight: 900; }
 .topnav .spacer { flex: 1; }
 .topnav .me { color: #CFE9D9; font-size: 13px; display: flex; align-items: center; gap: 6px; }
+.topnav .me a { color: #fff; border-bottom: none; padding: 0; }
 .topnav .role-tag { background: rgba(255,255,255,0.15); padding: 2px 8px; border-radius: 10px; font-size: 11px; text-transform: capitalize; }
 .topnav .nav-icon { width: 16px; height: 16px; vertical-align: -3px; }
 .topnav .logout-link { color: #F3C9C9; }
+
+.nav-search { position: relative; display: flex; align-items: center; }
+.nav-search-icon { position: absolute; left: 10px; width: 15px; height: 15px; color: rgba(255,255,255,0.6); pointer-events: none; }
+.nav-search input {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 999px;
+    padding: 7px 12px 7px 32px;
+    color: #fff;
+    font-size: 13px;
+    width: 200px;
+}
+.nav-search input::placeholder { color: rgba(255,255,255,0.6); }
+.nav-search input:focus { outline: 2px solid var(--color-accent); background: rgba(255,255,255,0.18); }
+
+.nav-bell { position: relative; padding: 6px !important; border-bottom: none !important; }
+.nav-badge {
+    position: absolute; top: 0; right: 0;
+    background: var(--color-accent); color: var(--color-on-accent);
+    font-size: 10px; font-weight: 800; line-height: 1;
+    padding: 3px 5px; border-radius: 999px;
+    border: 2px solid var(--color-primary-dark);
+}
 
 body.app { padding-top: 0; display: block; background: var(--color-bg); color: var(--color-foreground); font-family: var(--font-body); margin: 0; }
 .container { max-width: 720px; margin: 28px auto; padding: 0 16px; }
@@ -88,12 +113,27 @@ button.reject, .btn.reject { background: var(--color-destructive); }
 
 .actions { display: flex; gap: 10px; margin: 10px 0; }
 .action-form { display: inline-block; }
-.action-btn { background: var(--color-primary-light); color: var(--color-primary-dark); display: inline-flex; align-items: center; gap: 6px; }
+.action-btn { background: var(--color-primary-light); color: var(--color-primary-dark); display: inline-flex; align-items: center; gap: 6px; text-decoration: none; font-size: 13px; font-weight: 700; padding: 9px 16px; border-radius: var(--radius-btn); cursor: pointer; border: none; font-family: var(--font-body); }
 .action-btn:hover { background: var(--color-border); transform: none; }
 .action-btn .icon { width: 18px; height: 18px; vertical-align: -3px; }
 .action-btn.liked { background: var(--color-primary); color: var(--color-on-primary); }
 
-.comment { border-top: 1px solid var(--color-border); padding: 10px 0; font-size: 13px; }
+.profile-header { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+.profile-avatar { width: 88px; height: 88px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+.profile-avatar-fallback {
+    display: flex; align-items: center; justify-content: center;
+    background: var(--color-primary); color: var(--color-on-primary);
+    font-family: var(--font-display); font-weight: 800; font-size: 32px;
+}
+.profile-header-info h2 { font-family: var(--font-display); margin: 0 0 4px; display: flex; align-items: center; gap: 8px; }
+.profile-header-info { flex: 1; }
+
+.comment { border-top: 1px solid var(--color-border); padding: 10px 0; font-size: 13px; display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
+.comment > strong, .comment > span.comment-text { flex-shrink: 0; }
+.comment-action, .comment-action-form { display: inline-flex; }
+.comment-action { color: var(--color-muted-foreground); cursor: pointer; background: none; border: none; padding: 0; }
+.comment-action .icon { width: 14px; height: 14px; }
+.comment-action:hover { color: var(--color-primary-dark); }
 .pending-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--color-border); padding: 10px 0; }
 .tabs { display: flex; gap: 16px; margin-bottom: 16px; }
 .tabs a { text-decoration: none; color: var(--color-primary-dark); font-weight: 700; padding-bottom: 6px; }

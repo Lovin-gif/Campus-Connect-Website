@@ -38,22 +38,43 @@ and placement staff on campuses across Fiji.
 - **Landing page** (`index.php`): public marketing homepage —
   redirects straight to the feed if already logged in.
 - **Auth**: signup with email (required) + phone (optional), OTP
-  verification on first sign-in, login with either identifier.
-- **Profiles**: role-specific profile form shown right after signup;
-  the account is logged in as soon as the profile is completed.
+  verification on first sign-in, login with either identifier,
+  password reset via emailed (stubbed) link (`forgot_password.php`,
+  `reset_password.php`).
+- **Profiles** (`profile.php`, `edit_profile.php`): role-specific
+  details, a profile photo, and a resume upload for students. Every
+  post/comment author name links to their profile.
+- **Follow system**: one-way follows with follower/following counts
+  on each profile, and a Following tab on the feed alongside the
+  global Everyone feed.
 - **Feed**: general posts, job updates, and announcements, published
   immediately, with likes, shares (reposts to your own feed), and
-  comments on each post.
-- **Events**: staff/admin post events, published immediately.
-- **Messaging**: simple direct-message chat between any two approved
-  users (`messages.php`), polling-based (refresh to see new
-  messages).
+  comments — all editable and deletable by their author.
+- **Events**: staff/admin post events, published immediately, with
+  Going/Interested RSVPs and attendee counts.
+- **Messaging**: direct-message chat between any two approved users
+  (`messages.php`), polling-based (refresh to see new messages).
+- **Search** (`search.php`): people (by name/programme/department/
+  company), posts, and events.
+- **Notifications** (`notifications.php`): in-app notifications for
+  likes, comments, shares, new followers, and new messages, with an
+  unread-count badge in the nav.
+- **Moderation & safety**: report a post/comment/user (`report.php`)
+  into an admin-only review queue (`admin_reports.php`) that can
+  delete the content or suspend the account; block a user
+  (`profile.php`) to stop seeing their content and hide messaging in
+  both directions.
+- **Rate limiting**: login lockout after repeated failures, capped
+  OTP guesses, and a cap on how fast one account can post.
+- **CSRF protection** on every state-changing form.
+- **Legal pages**: Terms, Privacy, and Community Guidelines
+  (`terms.php`, `privacy.php`, `guidelines.php`), linked from
+  registration and the site footer.
 
 ## Not yet built / good next steps
 
-- Real email/SMS sending for OTPs (currently logged via `error_log`
-  — swap in PHPMailer / Twilio in `includes/functions.php`).
-- File uploads (resumes, profile photos).
+- Real email/SMS sending for OTPs and password resets (currently
+  logged via `error_log` — swap in PHPMailer / Twilio in
+  `includes/functions.php`).
 - Real-time chat (WebSockets) instead of refresh-based.
-- Search/filtering on the feed.
-- Password reset flow.
+- Groups/clubs/department spaces beyond the single global feed.

@@ -4,11 +4,14 @@ require_once __DIR__ . '/includes/functions.php';
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    verify_csrf();
+
     $role     = $_POST['role'] ?? '';
     $fullName = trim($_POST['full_name'] ?? '');
     $email    = trim($_POST['email'] ?? '');
     $phone    = trim($_POST['phone'] ?? '') ?: null; // optional
     $password = $_POST['password'] ?? '';
+    $agreed   = isset($_POST['agree_terms']);
 
     $validRoles = ['student', 'faculty', 'recruiter', 'staff'];
 
@@ -18,6 +21,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = 'Please enter a valid email address.';
     } elseif (strlen($password) < 8) {
         $error = 'Password must be at least 8 characters.';
+    } elseif (!$agreed) {
+        $error = 'You must agree to the Terms and Community Guidelines to sign up.';
     } else {
         // Check for existing email/phone
         $check = $pdo->prepare("SELECT user_id FROM users WHERE email = :email OR (phone_number IS NOT NULL AND phone_number = :phone)");
@@ -70,6 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <h2>Create an Account</h2>
         <?php if ($error): ?><p class="error"><?= htmlspecialchars($error) ?></p><?php endif; ?>
         <form method="POST">
+            <?= csrf_field() ?>
             <label>Account Type</label>
             <select name="role" required>
                 <option value="">-- Select --</option>
@@ -80,16 +86,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </select>
 
             <label>Full Name</label>
-            <input type="text" name="full_name" required>
+            <input type="text" name="full_name" required autocomplete="name">
 
             <label>Email</label>
-            <input type="email" name="email" required>
+            <input type="email" name="email" required autocomplete="email">
 
             <label>Phone Number (optional)</label>
-            <input type="tel" name="phone" placeholder="e.g. +679 XXXXXXX">
+            <input type="tel" name="phone" placeholder="e.g. +679 XXXXXXX" autocomplete="tel">
 
             <label>Password</label>
-            <input type="password" name="password" minlength="8" required>
+            <input type="password" name="password" minlength="8" required autocomplete="new-password">
+
+            <label class="checkbox-label">
+                <input type="checkbox" name="agree_terms" required>
+                I agree to the <a href="terms.php" target="_blank">Terms</a> and
+                <a href="guidelines.php" target="_blank">Community Guidelines</a>
+            </label>
 
             <button type="submit">Sign Up</button>
         </form>

@@ -156,6 +156,9 @@ if (!empty($_SESSION['user_id'])) {
         <a href="login.php">Log in</a>
         <a href="register.php">Sign up</a>
         <a href="#features">Features</a>
+        <a href="terms.php">Terms</a>
+        <a href="privacy.php">Privacy</a>
+        <a href="guidelines.php">Guidelines</a>
     </div>
     <div>&copy; <?= date('Y') ?> Campus Connect, Fiji.</div>
 </footer>

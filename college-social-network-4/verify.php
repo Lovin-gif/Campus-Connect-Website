@@ -11,6 +11,7 @@ $channel = $_SESSION['pending_verification_channel'];
 $error   = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    verify_csrf();
     $code = trim($_POST['code'] ?? '');
 
     if (verify_otp($pdo, $userId, $channel, $code)) {
@@ -19,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Location: profile_setup.php');
         exit;
     }
-    $error = 'That code is incorrect or has expired.';
+    $error = 'That code is incorrect or has expired. After too many wrong tries you\'ll need to resend a new code.';
 }
 
 if (isset($_GET['resend'])) {
@@ -49,8 +50,9 @@ if (isset($_GET['resend'])) {
         <p>We sent a 6-digit code to your <?= $channel ?>. Enter it below to continue.</p>
         <?php if ($error): ?><p class="error"><?= htmlspecialchars($error) ?></p><?php endif; ?>
         <form method="POST">
+            <?= csrf_field() ?>
             <label>Verification Code</label>
-            <input type="text" name="code" maxlength="6" required autofocus>
+            <input type="text" name="code" maxlength="6" required autofocus inputmode="numeric" autocomplete="one-time-code">
             <button type="submit">Verify</button>
         </form>
         <p><a href="verify.php?resend=1">Resend code</a></p>

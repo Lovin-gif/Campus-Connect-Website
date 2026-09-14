@@ -13,6 +13,25 @@ img { max-width: 100%; }
 
 :focus-visible { outline: 3px solid var(--color-pacific); outline-offset: 2px; }
 
+.legal-content {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 24px 32px 64px;
+    line-height: 1.7;
+}
+.legal-content h1 { font-family: var(--font-display); font-weight: 900; font-size: 34px; color: var(--color-primary-dark); margin-bottom: 4px; }
+.legal-content .updated { color: var(--color-muted-foreground); font-size: 13px; margin-bottom: 32px; }
+.legal-content h2 { font-family: var(--font-display); font-weight: 800; font-size: 20px; color: var(--color-primary-dark); margin-top: 36px; }
+.legal-content p, .legal-content li { color: var(--color-foreground); font-size: 15px; }
+.legal-content .disclaimer {
+    background: var(--color-accent-light);
+    border-radius: var(--radius-card);
+    padding: 16px 20px;
+    font-size: 14px;
+    color: var(--color-on-accent);
+    margin-bottom: 32px;
+}
+
 .site-nav {
     display: flex;
     align-items: center;

@@ -23,6 +23,7 @@ CREATE TABLE users (
     phone_verified_at TIMESTAMP NULL,
     profile_completed BOOLEAN NOT NULL DEFAULT FALSE,
     status          ENUM('pending','approved','rejected','suspended') NOT NULL DEFAULT 'approved',
+    avatar_path     VARCHAR(255) NULL,
     created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     approved_by     INT NULL,
     approved_at     TIMESTAMP NULL,
@@ -39,10 +40,38 @@ CREATE TABLE otp_verifications (
     user_id         INT NOT NULL,
     channel         ENUM('email','phone') NOT NULL,
     code_hash       VARCHAR(255) NOT NULL,
+    attempt_count   INT NOT NULL DEFAULT 0,
     expires_at      TIMESTAMP NOT NULL,
     consumed_at     TIMESTAMP NULL,
     created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+-- ------------------------------------------------------------
+-- Password reset tokens. A reset link's token is hashed at rest,
+-- same pattern as OTP codes.
+-- ------------------------------------------------------------
+CREATE TABLE password_resets (
+    reset_id        INT AUTO_INCREMENT PRIMARY KEY,
+    user_id         INT NOT NULL,
+    token_hash      VARCHAR(255) NOT NULL,
+    expires_at      TIMESTAMP NOT NULL,
+    used_at         TIMESTAMP NULL,
+    created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+-- ------------------------------------------------------------
+-- Login attempts, used to rate-limit brute-force login guesses.
+-- We check "how many failures for this identifier in the last
+-- N minutes" rather than keeping a running counter, so successes
+-- naturally reset the window.
+-- ------------------------------------------------------------
+CREATE TABLE login_attempts (
+    attempt_id      INT AUTO_INCREMENT PRIMARY KEY,
+    identifier      VARCHAR(150) NOT NULL,
+    succeeded       BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- ------------------------------------------------------------
@@ -101,6 +130,7 @@ CREATE TABLE posts (
     -- don't chain.
     shared_from_post_id INT NULL,
     created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at      TIMESTAMP NULL,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (reviewed_by) REFERENCES users(user_id) ON DELETE SET NULL,
     FOREIGN KEY (shared_from_post_id) REFERENCES posts(post_id) ON DELETE SET NULL
@@ -125,8 +155,54 @@ CREATE TABLE comments (
     user_id         INT NOT NULL,
     content         TEXT NOT NULL,
     created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at      TIMESTAMP NULL,
     FOREIGN KEY (post_id) REFERENCES posts(post_id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+-- ------------------------------------------------------------
+-- 4c. FOLLOWS. One-way (Twitter/LinkedIn-style) connections that
+-- power each profile's follower/following counts and the feed's
+-- "Following" tab.
+-- ------------------------------------------------------------
+CREATE TABLE follows (
+    follower_id     INT NOT NULL,
+    followee_id     INT NOT NULL,
+    created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (follower_id, followee_id),
+    FOREIGN KEY (follower_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (followee_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    CHECK (follower_id <> followee_id)
+);
+
+-- ------------------------------------------------------------
+-- 4d. BLOCKS. A blocks B: B's content is hidden from A (and vice
+-- versa for visibility purposes) and messaging between them stops.
+-- ------------------------------------------------------------
+CREATE TABLE blocks (
+    blocker_id      INT NOT NULL,
+    blocked_id      INT NOT NULL,
+    created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (blocker_id, blocked_id),
+    FOREIGN KEY (blocker_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (blocked_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    CHECK (blocker_id <> blocked_id)
+);
+
+-- ------------------------------------------------------------
+-- 4e. REPORTS. Flags a post, comment, or user for staff/admin
+-- review. target_id is polymorphic (meaning depends on
+-- target_type), so it can't carry its own foreign key.
+-- ------------------------------------------------------------
+CREATE TABLE reports (
+    report_id       INT AUTO_INCREMENT PRIMARY KEY,
+    reporter_id     INT NOT NULL,
+    target_type     ENUM('post','comment','user') NOT NULL,
+    target_id       INT NOT NULL,
+    reason          VARCHAR(255) NOT NULL,
+    status          ENUM('open','reviewed','dismissed') NOT NULL DEFAULT 'open',
+    created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (reporter_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
 -- ------------------------------------------------------------
@@ -173,12 +249,26 @@ CREATE TABLE events (
 );
 
 -- ------------------------------------------------------------
+-- 6b. EVENT RSVPs
+-- ------------------------------------------------------------
+CREATE TABLE event_rsvps (
+    event_id        INT NOT NULL,
+    user_id         INT NOT NULL,
+    rsvp_status     ENUM('going','interested') NOT NULL,
+    created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (event_id, user_id),
+    FOREIGN KEY (event_id) REFERENCES events(event_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+-- ------------------------------------------------------------
 -- 7. NOTIFICATIONS (system-generated, e.g. "your post was approved")
 -- ------------------------------------------------------------
 CREATE TABLE notifications (
     notification_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id         INT NOT NULL,
     message         VARCHAR(255) NOT NULL,
+    link            VARCHAR(255) NULL,
     is_read         BOOLEAN DEFAULT FALSE,
     created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
@@ -192,3 +282,8 @@ CREATE INDEX idx_posts_shared_from ON posts(shared_from_post_id);
 CREATE INDEX idx_users_status ON users(status);
 CREATE INDEX idx_messages_receiver ON messages(receiver_id, is_read);
 CREATE INDEX idx_events_date ON events(event_date);
+CREATE INDEX idx_follows_followee ON follows(followee_id);
+CREATE INDEX idx_notifications_user ON notifications(user_id, is_read);
+CREATE INDEX idx_login_attempts_identifier ON login_attempts(identifier, created_at);
+CREATE INDEX idx_reports_status ON reports(status);
+CREATE INDEX idx_password_resets_user ON password_resets(user_id);

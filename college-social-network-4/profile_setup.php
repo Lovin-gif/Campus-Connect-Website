@@ -20,6 +20,7 @@ $role = $user['role'];
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    verify_csrf();
     try {
         $pdo->beginTransaction();
 
@@ -102,6 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <p>Almost done — this information appears on your profile.</p>
         <?php if ($error): ?><p class="error"><?= htmlspecialchars($error) ?></p><?php endif; ?>
         <form method="POST">
+            <?= csrf_field() ?>
             <?php if ($role === 'student'): ?>
                 <label>Student ID Number</label>
                 <input type="text" name="student_id_no" required>
